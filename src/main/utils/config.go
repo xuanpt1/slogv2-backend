@@ -1,6 +1,9 @@
 package utils
 
 var (
+	// HttpPort 服务开放端口
+	HttpPort string = ":8080"
+
 	// DbType 数据库类型 暂时只支持mysql
 	DbType string
 	// DbHost 数据库主机

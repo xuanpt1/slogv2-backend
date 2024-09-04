@@ -7,7 +7,7 @@ type User struct {
 	//TIP 使用gorm.Model 自带主键ID
 	//仍需使用uid 便于与其他表的关联
 	Uid      string `gorm:"type:varchar(20);primaryKey;not null" json:"uid" label:"用户uid"`
-	Username string `gorm:"type:varchar(20);not null" json:"username" label:"用户名 不允许重复 登陆用"`
+	Username string `gorm:"type:varchar(20);not null;unique" json:"username" label:"用户名 不允许重复 登陆用"`
 	Password string `gorm:"type:varchar(100);not null" json:"password" label:"密码"`
 	Nickname string `gorm:"type:varchar(20);not null" json:"nickname" label:"昵称 显示的名称 默认是用户名"`
 	//TODO 待定 预留给多用户情形使用 暂时不用
