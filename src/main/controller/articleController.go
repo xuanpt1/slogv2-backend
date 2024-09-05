@@ -6,6 +6,7 @@ import (
 	"log"
 	"slogv2/src/main/entity"
 	"slogv2/src/main/service"
+	"slogv2/src/main/temp"
 	"slogv2/src/main/vo"
 )
 
@@ -60,7 +61,7 @@ func UpdateArticleLikes(c *gin.Context) {
 }
 
 func GetArticleListByPage(c *gin.Context) {
-	var page vo.Page
+	var page temp.Page
 	_ = c.ShouldBind(&page)
 
 	articleList, _, status, err := service.GetArticleList(page)
