@@ -11,7 +11,7 @@ import (
 // return status, err
 func CreateArticle(article *entity.Article) (int, error) {
 	if article.Title == "" || article.Content == "" {
-		return customError.ARTICLE_ADD_FAIL, customError.GetError(customError.ARTICLE_ADD_FAIL, "标题或内容不能为空")
+		return customError.ARTICLE_CREATE_FAIL, customError.GetError(customError.ARTICLE_CREATE_FAIL, "标题或内容不能为空")
 	}
 
 	var newArticle entity.Article
@@ -49,7 +49,7 @@ func CreateArticle(article *entity.Article) (int, error) {
 	//查询文章总数
 	err := entity.Db.Find(&a).Count(&count).Error
 	if err != nil {
-		return customError.ARTICLE_ADD_FAIL, customError.GetError(customError.ARTICLE_ADD_FAIL, err.Error())
+		return customError.ARTICLE_CREATE_FAIL, customError.GetError(customError.ARTICLE_CREATE_FAIL, err.Error())
 	}
 	if count == 0 {
 		//文章总数为0时，Aid为0
@@ -59,7 +59,7 @@ func CreateArticle(article *entity.Article) (int, error) {
 		var _a entity.Article
 		err = entity.Db.Last(&_a).Error
 		if err != nil {
-			return customError.ARTICLE_ADD_FAIL, customError.GetError(customError.ARTICLE_ADD_FAIL, err.Error())
+			return customError.ARTICLE_CREATE_FAIL, customError.GetError(customError.ARTICLE_CREATE_FAIL, err.Error())
 		}
 		//最新的文章的Aid加1
 		newArticle.Aid = _a.Aid + 1
@@ -67,7 +67,7 @@ func CreateArticle(article *entity.Article) (int, error) {
 
 	err = entity.Db.Create(&newArticle).Error
 	if err != nil {
-		return customError.ARTICLE_ADD_FAIL, customError.GetError(customError.ARTICLE_ADD_FAIL, err.Error())
+		return customError.ARTICLE_CREATE_FAIL, customError.GetError(customError.ARTICLE_CREATE_FAIL, err.Error())
 	}
 	return customError.SUCCESS, nil
 }
@@ -96,7 +96,11 @@ func GetArticleByAid(aid string) (entity.Article, int, error) {
 // UpdateArticle 更新文章
 // return status, err
 func UpdateArticle(article *entity.Article) (int, error) {
-	err := entity.Db.Updates(&article).Error
+	if article.Title == "" || article.Content == "" {
+		return customError.ARTICLE_CREATE_FAIL, customError.GetError(customError.ARTICLE_CREATE_FAIL, "标题或内容不能为空")
+	}
+
+	err := entity.Db.Where("aid =?", article.Aid).Updates(&article).Error
 	if err != nil {
 		return customError.ARTICLE_UPDATE_FAIL, customError.GetError(customError.ARTICLE_UPDATE_FAIL, err.Error())
 	}
