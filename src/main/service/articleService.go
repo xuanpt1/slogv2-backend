@@ -4,8 +4,11 @@ import (
 	"slogv2/src/main/entity"
 	"slogv2/src/main/utils"
 	"slogv2/src/main/utils/customError"
+	"slogv2/src/main/vo"
 )
 
+// CreateArticle 创建文章
+// return status, err
 func CreateArticle(article *entity.Article) (int, error) {
 	if article.Title == "" || article.Content == "" {
 		return customError.ARTICLE_ADD_FAIL, customError.GetError(customError.ARTICLE_ADD_FAIL, "标题或内容不能为空")
@@ -69,12 +72,19 @@ func CreateArticle(article *entity.Article) (int, error) {
 	return customError.SUCCESS, nil
 }
 
+// GetArticleByAid 根据aid获取文章
+// return article, status, err
 func GetArticleByAid(aid string) (entity.Article, int, error) {
 	var article entity.Article
 	err := entity.Db.Where("aid = ?", aid).Find(&article).Error
 	if err != nil {
 		return article, customError.ARTICLE_NOT_FOUND, customError.GetError(customError.ARTICLE_NOT_FOUND, err.Error())
+	} else if article.Title == "" {
+		return article, customError.ARTICLE_NOT_FOUND, customError.GetError(customError.ARTICLE_NOT_FOUND, "文章不存在或已被删除")
 	}
+
+	//TODO 点击量增加条件检测或单独编写点击量增加函数
+	//		目前逻辑为每次get文章时点击量+1
 	article.Clicks++
 	err = entity.Db.Updates(&article).Error
 	if err != nil {
@@ -83,7 +93,48 @@ func GetArticleByAid(aid string) (entity.Article, int, error) {
 	return article, customError.SUCCESS, nil
 }
 
-func GetArticleList(page int, pageSize int) ([]entity.Article, int64, int, error) {
+// UpdateArticle 更新文章
+// return status, err
+func UpdateArticle(article *entity.Article) (int, error) {
+	err := entity.Db.Updates(&article).Error
+	if err != nil {
+		return customError.ARTICLE_UPDATE_FAIL, customError.GetError(customError.ARTICLE_UPDATE_FAIL, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
+// DeleteArticle 删除文章
+// return status, err
+func DeleteArticle(aid string) (int, error) {
+	err := entity.Db.Where("aid =?", aid).Delete(&entity.Article{}).Error
+	if err != nil {
+		return customError.ARTICLE_DELETE_FAIL, customError.GetError(customError.ARTICLE_DELETE_FAIL, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
+// UpdateArticleLikes 更新文章点赞数
+// return status, err
+func UpdateArticleLikes(aid string) (int, error) {
+	var article entity.Article
+	err := entity.Db.Where("aid =?", aid).Find(&article).Error
+	if err != nil {
+		return customError.ARTICLE_NOT_FOUND, customError.GetError(customError.ARTICLE_NOT_FOUND, err.Error())
+	}
+	if article.Title == "" {
+		return customError.ARTICLE_NOT_FOUND, customError.GetError(customError.ARTICLE_NOT_FOUND, "文章不存在或已被删除")
+	}
+	article.Likes++
+	err = entity.Db.Updates(&article).Error
+	if err != nil {
+		return customError.ARTICLE_UPDATE_FAIL, customError.GetError(customError.ARTICLE_UPDATE_FAIL, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
+// GetArticleList 获取文章列表
+// return articleList, count, status, err
+func GetArticleList(page vo.Page) ([]entity.Article, int64, int, error) {
 	var articles []entity.Article
 	var total int64
 	err := entity.Db.Model(&entity.Article{}).Count(&total).Error
@@ -91,10 +142,42 @@ func GetArticleList(page int, pageSize int) ([]entity.Article, int64, int, error
 		//log.Println(err)
 		return nil, 0, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
 	}
-	err = entity.Db.Limit(pageSize).Offset((page - 1) * pageSize).Find(&articles).Error
+	err = entity.Db.Limit(page.PageSize).Offset((page.Page - 1) * page.PageSize).Find(&articles).Error
 	if err != nil {
 		//log.Println(err)
 		return nil, 0, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
 	}
+	if len(articles) == 0 {
+		return nil, 0, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, "没有更多文章了")
+	}
 	return articles, total, customError.SUCCESS, nil
+}
+
+// GetAchieveArticleList 获取归档文章列表
+// param year 年份
+// return AchieveArticle, status, err
+func GetAchieveArticleList() ([]vo.AchieveArticle, int, error) {
+	var achieveList []vo.AchieveArticle
+	var years []int
+
+	err := entity.Db.Table("article").Select("DISTINCT year(created_at) as year").Find(&years).Error
+	if err != nil {
+		return nil, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
+	}
+	if len(years) == 0 {
+		return nil, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, "暂无文章")
+	}
+
+	for _, year := range years {
+		var articleList []entity.Article
+		err = entity.Db.Where("year(created_at) =?", year).Find(&articleList).Error
+		if err != nil {
+			return nil, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
+		}
+		achieveList = append(achieveList, vo.AchieveArticle{
+			Year:        year,
+			ArticleList: articleList,
+		})
+	}
+	return achieveList, customError.SUCCESS, nil
 }

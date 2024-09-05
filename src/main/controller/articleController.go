@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"log"
 	"slogv2/src/main/entity"
 	"slogv2/src/main/service"
-	"slogv2/src/main/utils/customError"
+	"slogv2/src/main/vo"
 )
 
 func CreateArticle(c *gin.Context) {
@@ -13,62 +14,61 @@ func CreateArticle(c *gin.Context) {
 	_ = c.ShouldBind(&article)
 	status, err := service.CreateArticle(&article)
 
-	if status == http.StatusOK {
-		c.JSON(http.StatusOK, gin.H{
-			"code": status,
-			"msg":  "文章创建成功",
-		})
-	} else {
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": status,
-				"msg":  err.Error(),
-			})
-			return
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": status,
-				"msg":  customError.GetMsg(status),
-			})
-		}
+	if !ResponseHandler(c, status, err, "文章创建成功", nil) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }
 
 func GetArticle(c *gin.Context) {
-	param := c.Param("aid")
-	query := c.Query("aid")
-	var aid string
-	if query != "" {
-		aid = query
-	} else if param != "" {
-		aid = param
-	} else {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": customError.ARTICLE_NOT_FOUND,
-			"msg":  "参数错误",
-		})
-	}
+	aid := ParamHandler(c, "aid")["aid"]
 	article, status, err := service.GetArticleByAid(aid)
 
-	if status == http.StatusOK {
-		c.JSON(http.StatusOK, gin.H{
-			"code": status,
-			"msg":  "文章获取成功",
-			"data": article,
-		})
-	} else {
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": status,
-				"msg":  err.Error(),
-			})
-			return
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": status,
-				"msg":  customError.GetMsg(status),
-				"data": article,
-			})
-		}
+	if !ResponseHandler(c, status, err, "文章获取成功", article) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func UpdateArticle(c *gin.Context) {
+	var article entity.Article
+	_ = c.ShouldBind(&article)
+	status, err := service.UpdateArticle(&article)
+
+	if !ResponseHandler(c, status, err, "文章更新成功", nil) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func DeleteArticle(c *gin.Context) {
+	aid := ParamHandler(c, "aid")["aid"]
+	status, err := service.DeleteArticle(aid)
+
+	ResponseHandler(c, status, err, "文章删除成功", nil)
+}
+
+func UpdateArticleLikes(c *gin.Context) {
+	aid := ParamHandler(c, "aid")["aid"]
+	status, err := service.UpdateArticleLikes(aid)
+
+	if !ResponseHandler(c, status, err, "文章点赞成功", nil) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func GetArticleListByPage(c *gin.Context) {
+	var page vo.Page
+	_ = c.ShouldBind(&page)
+
+	articleList, _, status, err := service.GetArticleList(page)
+
+	if !ResponseHandler(c, status, err, "文章获取成功", articleList) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func GetAchieveArticleList(c *gin.Context) {
+	achieveList, status, err := service.GetAchieveArticleList()
+
+	if !ResponseHandler(c, status, err, "归档信息获取成功", achieveList) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }

@@ -18,9 +18,19 @@ func InitRouter() {
 		})
 	})
 
-	routerv1.PUT("/article", CreateArticle)
+	routerv1.POST("/article", CreateArticle)
 	routerv1.GET("/article/:aid", GetArticle)
 	routerv1.GET("/article", GetArticle)
+	routerv1.PUT("/article", UpdateArticle)
+
+	routerv1.DELETE("/article/:aid", DeleteArticle)
+	routerv1.DELETE("/article", DeleteArticle)
+
+	routerv1.POST("/articleList", GetArticleListByPage)
+	routerv1.GET("/article/likes/:aid", UpdateArticleLikes)
+	routerv1.GET("/article/likes", UpdateArticleLikes)
+
+	routerv1.GET("/achieve", GetAchieveArticleList)
 
 	_ = router.Run(utils.HttpPort)
 }

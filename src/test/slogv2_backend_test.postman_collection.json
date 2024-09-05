@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "ced3e88c-4634-4ccb-b6fd-20f8523b3857",
+		"name": "slogv2_backend_test",
+		"description": "基于gin的slogv2测试",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createArticle",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ID\": 0,\r\n  \"CreatedAt\": \"0001-01-01T00:00:00Z\",\r\n  \"UpdatedAt\": \"0001-01-01T00:00:00Z\",\r\n  \"DeletedAt\": null,\r\n  \"aid\": 0,\r\n  \"title\": \"新的一篇测试文章\",\r\n  \"image\": \"https://img.xuanpt2.com/27.png\",\r\n  \"abstract\": \"\",\r\n  \"content\": \"一段测试正文\",\r\n  \"uid\": 1,\r\n  \"likes\": 0,\r\n  \"clicks\": 0,\r\n  \"allow_comment\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/article",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"article"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ping test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/ping",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getArticle",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/article/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"article",
+						"5"
+					],
+					"query": [
+						{
+							"key": "aid",
+							"value": "5",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateArticle",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"ID\": 0,\r\n        \"CreatedAt\": \"2024-09-06T00:59:14.179+08:00\",\r\n        \"UpdatedAt\": \"2024-09-06T00:59:35.49+08:00\",\r\n        \"DeletedAt\": null,\r\n        \"aid\": 4,\r\n        \"title\": \"测试文章修改\",\r\n        \"image\": \"https://img.xuanpt2.com/27.png\",\r\n        \"abstract\": \"修改了一段文章正文\",\r\n        \"content\": \"一段修改后的正文\",\r\n        \"uid\": 1,\r\n        \"likes\": 0,\r\n        \"clicks\": 2,\r\n        \"allow_comment\": true\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/article",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"article"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteArticle",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/article/5",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"article",
+						"5"
+					],
+					"query": [
+						{
+							"key": "aid",
+							"value": "5",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listArticleByPage",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"page\" : 1,\r\n    \"page_size\" : 3,\r\n    \"total\" : 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/articleList",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"articleList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "likesArticle",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/api/v1/article/likes?aid=6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"article",
+						"likes"
+					],
+					"query": [
+						{
+							"key": "aid",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
