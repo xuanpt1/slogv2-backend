@@ -5,6 +5,7 @@ import (
 	"slogv2/src/main/utils"
 	"slogv2/src/main/utils/customError"
 	"slogv2/src/main/vo"
+	"strconv"
 )
 
 // CreateArticle 创建文章
@@ -184,4 +185,55 @@ func GetAchieveArticleList() ([]vo.AchieveArticle, int, error) {
 		})
 	}
 	return achieveList, customError.SUCCESS, nil
+}
+
+func CreateArticleWithCategory(articleWithCategory *vo.ArticleWithCategory) (int, error) {
+	status, err := CreateArticle(&articleWithCategory.Article)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+
+	status, err = AddCategoryList(articleWithCategory.Article, articleWithCategory.CategoryList)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
+func UpdateArticleWithCategory(articleWithCategory *vo.ArticleWithCategory) (int, error) {
+	status, err := UpdateArticle(&articleWithCategory.Article)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+
+	status, err = DeleteRelationByAid(strconv.Itoa(articleWithCategory.Article.Aid))
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+
+	status, err = AddCategoryList(articleWithCategory.Article, articleWithCategory.CategoryList)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+
+	return status, nil
+}
+
+func GetArticleWithCategory(aid string) (vo.ArticleWithCategory, int, error) {
+	var articleWithCategory vo.ArticleWithCategory
+
+	article, status, err := GetArticleByAid(aid)
+	if err != nil {
+		return articleWithCategory, status, customError.GetError(status, err.Error())
+	}
+
+	categoryList, status, err := GetCategoryListByAid(aid)
+	if err != nil {
+		return articleWithCategory, status, customError.GetError(status, err.Error())
+	}
+
+	articleWithCategory.Article = article
+	articleWithCategory.CategoryList = categoryList
+
+	return articleWithCategory, status, nil
 }

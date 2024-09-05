@@ -53,6 +53,24 @@ func GetCategoryList() ([]entity.Category, int, error) {
 	return categoryList, customError.SUCCESS, nil
 }
 
+func GetCategoryListByAid(aid string) ([]entity.Category, int, error) {
+	var categoryList []entity.Category
+
+	relationList, status, err := GetRelationByAid(aid)
+	if err != nil {
+		return categoryList, status, customError.GetError(status, err.Error())
+	}
+
+	for _, relation := range relationList {
+		category, status, err := GetCategoryByCid(relation.Cid)
+		if err != nil {
+			return categoryList, status, customError.GetError(status, err.Error())
+		}
+		categoryList = append(categoryList, category)
+	}
+	return categoryList, customError.SUCCESS, nil
+}
+
 func GetCategoryByCid(cid int) (entity.Category, int, error) {
 	var category entity.Category
 	err := entity.Db.Where("category_id =?", cid).Find(&category).Error
@@ -197,24 +215,60 @@ func DeleteCategoryById(id string) (int, error) {
 	}
 }
 
-func AddCategory(cid string, aid string) (int, error) {
-	var rela entity.Relationship
-	rela.Cid, _ = strconv.Atoi(cid)
-	rela.Aid, _ = strconv.Atoi(aid)
-	status, err := CreateRelation(&rela)
+func AddCategoryList(article entity.Article, categoryList []entity.Category) (int, error) {
+	var relationList []entity.Relationship
+
+	for _, c := range categoryList {
+		var relation entity.Relationship
+		relation.Cid = c.CategoryId
+		relation.Aid = article.Aid
+		relationList = append(relationList, relation)
+	}
+
+	status, err := CreateRelationList(relationList)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
+//-------------------------------分割线--------------------------------------
+// 以下为暂未使用的分类相关的方法，保留
+
+func AddCategory(aid string, cid string) (int, error) {
+	var relation entity.Relationship
+	relation.Cid, _ = strconv.Atoi(cid)
+	relation.Aid, _ = strconv.Atoi(aid)
+	status, err := CreateRelation(&relation)
 	if err != nil {
 		return customError.RELATION_CREATE_FAIL, customError.GetError(customError.RELATION_CREATE_FAIL, err.Error())
 	}
 	return status, err
 }
-
-func RemoveCategory(cid string, aid string) (int, error) {
+func RemoveCategory(aid string, cid string) (int, error) {
 	var relation entity.Relationship
 	relation.Cid, _ = strconv.Atoi(cid)
 	relation.Aid, _ = strconv.Atoi(aid)
 	status, err := DeleteRelation(&relation)
 	if err != nil {
 		return customError.RELATION_CREATE_FAIL, customError.GetError(customError.RELATION_CREATE_FAIL, err.Error())
+	}
+	return status, nil
+}
+
+func RemoveCategoryList(article entity.Article, categoryList []entity.Category) (int, error) {
+	var relationList []entity.Relationship
+
+	for _, c := range categoryList {
+		var relation entity.Relationship
+		relation.Cid = c.CategoryId
+		relation.Aid = article.Aid
+		relationList = append(relationList, relation)
+	}
+
+	status, err := DeleteRelationList(relationList)
+	if err != nil {
+		return status, customError.GetError(status, err.Error())
 	}
 	return status, nil
 }

@@ -12,6 +12,7 @@ import (
 func CreateArticle(c *gin.Context) {
 	var article entity.Article
 	_ = c.ShouldBind(&article)
+
 	status, err := service.CreateArticle(&article)
 
 	if !ResponseHandler(c, status, err, "文章创建成功", nil) {
@@ -21,6 +22,7 @@ func CreateArticle(c *gin.Context) {
 
 func GetArticle(c *gin.Context) {
 	aid := ParamHandler(c, "aid")["aid"]
+
 	article, status, err := service.GetArticleByAid(aid)
 
 	if !ResponseHandler(c, status, err, "文章获取成功", article) {
@@ -31,6 +33,7 @@ func GetArticle(c *gin.Context) {
 func UpdateArticle(c *gin.Context) {
 	var article entity.Article
 	_ = c.ShouldBind(&article)
+
 	status, err := service.UpdateArticle(&article)
 
 	if !ResponseHandler(c, status, err, "文章更新成功", nil) {
@@ -40,6 +43,7 @@ func UpdateArticle(c *gin.Context) {
 
 func DeleteArticle(c *gin.Context) {
 	aid := ParamHandler(c, "aid")["aid"]
+
 	status, err := service.DeleteArticle(aid)
 
 	ResponseHandler(c, status, err, "文章删除成功", nil)
@@ -47,6 +51,7 @@ func DeleteArticle(c *gin.Context) {
 
 func UpdateArticleLikes(c *gin.Context) {
 	aid := ParamHandler(c, "aid")["aid"]
+
 	status, err := service.UpdateArticleLikes(aid)
 
 	if !ResponseHandler(c, status, err, "文章点赞成功", nil) {
@@ -69,6 +74,38 @@ func GetAchieveArticleList(c *gin.Context) {
 	achieveList, status, err := service.GetAchieveArticleList()
 
 	if !ResponseHandler(c, status, err, "归档信息获取成功", achieveList) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func CreateArticleWithCategory(c *gin.Context) {
+	var articleWithCategory vo.ArticleWithCategory
+	_ = c.ShouldBind(&articleWithCategory)
+
+	status, err := service.CreateArticleWithCategory(&articleWithCategory)
+
+	if !ResponseHandler(c, status, err, "文章创建成功", nil) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func UpdateArticleWithCategory(c *gin.Context) {
+	var articleWithCategory vo.ArticleWithCategory
+	_ = c.ShouldBind(&articleWithCategory)
+
+	status, err := service.UpdateArticleWithCategory(&articleWithCategory)
+
+	if !ResponseHandler(c, status, err, "文章更新成功", nil) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func GetArticleWithCategory(c *gin.Context) {
+	aid := ParamHandler(c, "aid")["aid"]
+
+	articleWithCategory, status, err := service.GetArticleWithCategory(aid)
+
+	if !ResponseHandler(c, status, err, "文章获取成功", articleWithCategory) {
 		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }

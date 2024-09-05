@@ -31,6 +31,14 @@ func CreateRelation(relation *entity.Relationship) (int, error) {
 	return customError.SUCCESS, nil
 }
 
+func CreateRelationList(relationList []entity.Relationship) (int, error) {
+	err := entity.Db.Create(&relationList).Error
+	if err != nil {
+		return customError.RELATION_CREATE_FAIL, customError.GetError(customError.RELATION_CREATE_FAIL, err.Error())
+	}
+	return customError.SUCCESS, nil
+}
+
 func DeleteRelation(relation *entity.Relationship) (int, error) {
 	err := entity.Db.Delete(relation).Error
 	if err != nil {
