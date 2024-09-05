@@ -1,4 +1,4 @@
-package temp
+package vo
 
 import "slogv2/src/main/entity"
 

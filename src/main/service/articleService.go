@@ -2,7 +2,6 @@ package service
 
 import (
 	"slogv2/src/main/entity"
-	"slogv2/src/main/temp"
 	"slogv2/src/main/utils"
 	"slogv2/src/main/utils/customError"
 	"slogv2/src/main/vo"
@@ -140,7 +139,7 @@ func UpdateArticleLikes(aid string) (int, error) {
 
 // GetArticleList 获取文章列表
 // return articleList, count, status, err
-func GetArticleList(page temp.Page) ([]entity.Article, int64, int, error) {
+func GetArticleList(page vo.Page) ([]entity.Article, int64, int, error) {
 	var articles []entity.Article
 	var total int64
 	err := entity.Db.Model(&entity.Article{}).Count(&total).Error
@@ -162,8 +161,8 @@ func GetArticleList(page temp.Page) ([]entity.Article, int64, int, error) {
 // GetAchieveArticleList 获取归档文章列表
 // param year 年份
 // return AchieveArticle, status, err
-func GetAchieveArticleList() ([]temp.AchieveArticle, int, error) {
-	var achieveList []temp.AchieveArticle
+func GetAchieveArticleList() ([]vo.AchieveArticle, int, error) {
+	var achieveList []vo.AchieveArticle
 	var years []int
 
 	err := entity.Db.Table("article").Select("DISTINCT year(created_at) as year").Find(&years).Error
@@ -180,7 +179,7 @@ func GetAchieveArticleList() ([]temp.AchieveArticle, int, error) {
 		if err != nil {
 			return nil, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
 		}
-		achieveList = append(achieveList, temp.AchieveArticle{
+		achieveList = append(achieveList, vo.AchieveArticle{
 			Year:        year,
 			ArticleList: articleList,
 		})

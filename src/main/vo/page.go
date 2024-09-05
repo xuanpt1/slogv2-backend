@@ -1,4 +1,4 @@
-package temp
+package vo
 
 type Page struct {
 	Page     int   `json:"page" label:"当前页码"`
