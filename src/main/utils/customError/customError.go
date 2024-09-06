@@ -32,6 +32,26 @@ const (
 	RELATION_NOT_FOUND   = 3001
 	RELATION_CREATE_FAIL = 3002
 	RELATION_DELETE_FAIL = 3003
+
+	//评论错误码
+	COMMENT_NOT_FOUND   = 4001
+	COMMENT_UPDATE_FAIL = 4002
+	COMMENT_DELETE_FAIL = 4003
+	COMMENT_CREATE_FAIL = 4004
+	COMMENT_LIST_FAIL   = 4005
+
+	//配置错误码
+	OPTIONS_NOT_FOUND   = 5001
+	OPTIONS_UPDATE_FAIL = 5002
+	OPTIONS_DELETE_FAIL = 5003
+	OPTIONS_CREATE_FAIL = 5004
+	OPTIONS_LIST_FAIL   = 5005
+
+	//用户错误码
+	USER_NOT_FOUND = 10001
+
+	//其他错误码
+	OTHER_ERROR = 11111
 )
 
 var codeMsg = map[int]string{
@@ -57,6 +77,22 @@ var codeMsg = map[int]string{
 	RELATION_NOT_FOUND:   "无相关分类信息",
 	RELATION_CREATE_FAIL: "文章添加分类失败失败",
 	RELATION_DELETE_FAIL: "文章移除分类失败失败",
+
+	COMMENT_NOT_FOUND:   "评论不存在",
+	COMMENT_UPDATE_FAIL: "评论更新失败",
+	COMMENT_DELETE_FAIL: "评论删除失败",
+	COMMENT_CREATE_FAIL: "评论添加失败",
+	COMMENT_LIST_FAIL:   "评论列表获取失败",
+
+	OPTIONS_NOT_FOUND:   "配置不存在",
+	OPTIONS_UPDATE_FAIL: "配置更新失败",
+	OPTIONS_DELETE_FAIL: "配置删除失败",
+	OPTIONS_CREATE_FAIL: "配置创建失败",
+	OPTIONS_LIST_FAIL:   "配置列表获取失败",
+
+	USER_NOT_FOUND: "用户不存在",
+
+	OTHER_ERROR: "其他错误",
 }
 
 func GetMsg(code int) string {

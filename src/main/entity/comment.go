@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Comment struct {
 	gorm.Model
-	Cid      int    `gorm:"type:int;not null;primary key" json:"cid" label:"评论id"`
+	Cid      int    `gorm:"type:int;not null;primaryKey" json:"cid" label:"评论id"`
 	Aid      int    `gorm:"type:int;not null" json:"aid" label:"文章id"`
 	Content  string `gorm:"type:text;not null" json:"content" label:"评论内容"`
 	Uid      int    `gorm:"type:int;not null" json:"uid" label:"用户id"`

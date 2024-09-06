@@ -12,6 +12,8 @@ func ParamHandler(c *gin.Context, args ...string) map[string]string {
 		for _, argName := range args {
 			param := c.Param(argName)
 			query := c.Query(argName)
+			//log.Println(fmt.Sprintf("获取到参数: %s=%s", argName, param))
+			//log.Println(fmt.Sprintf("获取到参数: %s=%s", argName, query))
 			var _arg string
 			if query != "" {
 				_arg = query
@@ -26,6 +28,7 @@ func ParamHandler(c *gin.Context, args ...string) map[string]string {
 			}
 			mapArgs[argName] = _arg
 		}
+		//log.Println(fmt.Sprintf("获取到参数: %v", mapArgs))
 		return mapArgs
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{

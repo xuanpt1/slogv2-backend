@@ -42,5 +42,31 @@ func InitRouter() {
 	routerv1.DELETE("/category/:cid", DeleteCategory)
 	routerv1.GET("/categoryList", GetCategoryList)
 
+	//配置CRUD
+	routerv1.POST("/options", CreateOption)
+	routerv1.PUT("/options", UpdateOption)
+	routerv1.GET("/options", GetOptionsByName)
+	routerv1.GET("/options/:name", GetOptionsByName)
+	routerv1.DELETE("/options", DeleteOption)
+	routerv1.DELETE("/options/:name", DeleteOption)
+	routerv1.GET("/optionsList", GetOptionsList)
+
+	//评论CRUD
+	routerv1.POST("/comment", CreateComment)
+	routerv1.PUT("/comment", UpdateComment)
+	routerv1.GET("/comment", GetComment)
+	routerv1.GET("/comment/:cid", GetComment)
+	routerv1.DELETE("/comment", DeleteComment)
+	routerv1.DELETE("/comment/:cid", DeleteComment)
+	routerv1.GET("/commentList", GetCommentList)
+	routerv1.GET("/commentList/:aid", GetCommentListByAid)
+	routerv1.GET("/commentTree", GetCommentTreeByAid)
+	routerv1.GET("/commentTree/:aid", GetCommentTreeByAid)
+	routerv1.GET("/commentPending", GetPendingCommentList)
+	routerv1.GET("/commentEnable", EnableComment)
+	routerv1.GET("/commentEnable/:cid", EnableComment)
+	routerv1.GET("/commentCount", GetCommentCount)
+	routerv1.GET("/commentCount/:aid", GetCommentCountByAid)
+
 	_ = router.Run(utils.HttpPort)
 }
