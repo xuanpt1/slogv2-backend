@@ -68,5 +68,16 @@ func InitRouter() {
 	routerv1.GET("/commentCount", GetCommentCount)
 	routerv1.GET("/commentCount/:aid", GetCommentCountByAid)
 
+	//用户CRUD
+	routerv1.POST("/user", CreateUser)
+	routerv1.PUT("/user", UpdateUser)
+	routerv1.GET("/user", GetUserByUid)
+	routerv1.GET("/user/:uid", GetUserByUid)
+	routerv1.DELETE("/user", DeleteUser)
+	routerv1.DELETE("/user/:uid", DeleteUser)
+	routerv1.GET("/userList", GetUserList)
+	routerv1.GET("/userByName", GetUserByUsername)
+	routerv1.GET("/userByName/:username", GetUserByUsername)
+
 	_ = router.Run(utils.HttpPort)
 }
