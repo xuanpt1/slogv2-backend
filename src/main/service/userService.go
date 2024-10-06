@@ -20,6 +20,8 @@ func CreateUser(user *entity.User) (int, error) {
 		user.Nickname = user.Username
 	}
 
+	//pwd, salt := scrypt.
+
 	user.IsActive = true
 
 	//手动实现主键UID自增

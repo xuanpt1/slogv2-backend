@@ -18,6 +18,9 @@ func InitRouter() {
 		})
 	})
 
+	//for test
+	routerv1.GET("/getAllArticle", GetAllArticle)
+
 	//文章CRUD
 	routerv1.POST("/article", CreateArticle)
 	routerv1.GET("/article/:aid", GetArticle)
@@ -26,6 +29,7 @@ func InitRouter() {
 	routerv1.DELETE("/article/:aid", DeleteArticle)
 	routerv1.DELETE("/article", DeleteArticle)
 	routerv1.POST("/articleList", GetArticleListByPage)
+	routerv1.GET("/articleList", GetArticleListInfo)
 	routerv1.GET("/article/likes/:aid", UpdateArticleLikes)
 	routerv1.GET("/article/likes", UpdateArticleLikes)
 	routerv1.POST("/articleWithCategory", CreateArticleWithCategory)

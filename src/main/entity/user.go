@@ -9,6 +9,7 @@ type User struct {
 	Uid      string `gorm:"type:varchar(20);primaryKey;not null" json:"uid" label:"用户uid"`
 	Username string `gorm:"type:varchar(20);not null;unique" json:"username" label:"用户名 不允许重复 登陆用"`
 	Password string `gorm:"type:varchar(100);not null" json:"password" label:"密码"`
+	Salt     string `gorm:"type:varchar(100)" json:"salt" label:"盐值"`
 	Nickname string `gorm:"type:varchar(20);not null" json:"nickname" label:"昵称 显示的名称 默认是用户名"`
 	//TODO 待定 预留给多用户情形使用 暂时不用
 	Url      string `gorm:"type:varchar(100)" json:"url" label:"个人主页"`

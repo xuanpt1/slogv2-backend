@@ -237,3 +237,34 @@ func GetArticleWithCategory(aid string) (vo.ArticleWithCategory, int, error) {
 
 	return articleWithCategory, status, nil
 }
+
+func GetAllArticle() ([]entity.Article, int, int, error) {
+	var articleList []entity.Article
+	var total int64
+
+	err := entity.Db.Model(&entity.Article{}).Count(&total).Error
+	if err != nil {
+		return nil, 0, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
+	}
+
+	err = entity.Db.Find(&articleList).Error
+	if err != nil {
+		return nil, 0, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
+	}
+
+	return articleList, int(total), customError.SUCCESS, nil
+}
+
+func GetArticleListInfo() (vo.Page, int, error) {
+	var page vo.Page
+
+	page.PageSize = utils.DefaultPageSize
+	page.Page = 1
+
+	err := entity.Db.Model(&entity.Article{}).Count(&page.Total).Error
+	if err != nil {
+		return page, customError.ARTICLE_LIST_FAIL, customError.GetError(customError.ARTICLE_LIST_FAIL, err.Error())
+	}
+
+	return page, customError.SUCCESS, nil
+}

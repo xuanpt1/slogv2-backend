@@ -109,3 +109,20 @@ func GetArticleWithCategory(c *gin.Context) {
 		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }
+
+func GetAllArticle(c *gin.Context) {
+	articleList, total, status, err := service.GetAllArticle()
+
+	if !ResponseHandler(c, status, err, fmt.Sprintf("共%d篇文章获取成功", total), articleList) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func GetArticleListInfo(c *gin.Context) {
+
+	articleListInfo, status, err := service.GetArticleListInfo()
+
+	if !ResponseHandler(c, status, err, "文章列表信息获取成功", articleListInfo) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}

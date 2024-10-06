@@ -18,6 +18,10 @@ var (
 	DbName string
 
 	TestDefaultImg string = "https://img.xuanpt2.com/27.png"
+
+	TestDefaultSalt string = "xuanpt2"
+
+	DefaultPageSize int = 5
 )
 
 func init() {
