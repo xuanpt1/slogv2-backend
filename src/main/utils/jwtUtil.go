@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	"slogv2/src/main/utils/customError"
 	"strings"
 	"time"
