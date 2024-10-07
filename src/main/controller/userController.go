@@ -6,6 +6,7 @@ import (
 	"log"
 	"slogv2/src/main/entity"
 	"slogv2/src/main/service"
+	"slogv2/src/main/vo"
 )
 
 func GetUserByUid(c *gin.Context) {
@@ -65,6 +66,17 @@ func DeleteUser(c *gin.Context) {
 	status, err := service.DeleteUser(&entity.User{Uid: uid})
 
 	if !ResponseHandler(c, status, err, "用户删除成功", uid) {
+		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
+	}
+}
+
+func Login(c *gin.Context) {
+	var login vo.Login
+	_ = c.ShouldBind(&login)
+
+	status, err := service.Login(&login)
+
+	if !ResponseHandler(c, status, err, "用户登录成功", nil) {
 		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }

@@ -83,5 +83,7 @@ func InitRouter() {
 	routerv1.GET("/userByName", GetUserByUsername)
 	routerv1.GET("/userByName/:username", GetUserByUsername)
 
+	routerv1.POST("/login", Login)
+
 	_ = router.Run(utils.HttpPort)
 }

@@ -1,9 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"slogv2/src/main/entity"
 	"slogv2/src/main/utils"
 	"slogv2/src/main/utils/customError"
+	"slogv2/src/main/vo"
 	"strconv"
 )
 
@@ -20,13 +22,19 @@ func CreateUser(user *entity.User) (int, error) {
 		user.Nickname = user.Username
 	}
 
-	//pwd, salt := scrypt.
+	pwd, salt, err := utils.ScryptPassword(user.Password)
+	if err != nil {
+		return customError.USER_CREATE_FAIL, err
+	}
+
+	user.Password = pwd
+	user.Salt = salt
 
 	user.IsActive = true
 
 	//手动实现主键UID自增
 	var count int64
-	err := entity.Db.Find(&entity.User{}).Count(&count).Error
+	err = entity.Db.Find(&entity.User{}).Count(&count).Error
 	if err != nil {
 		return customError.USER_CREATE_FAIL, customError.GetError(customError.USER_CREATE_FAIL, err.Error())
 	}
@@ -45,6 +53,7 @@ func CreateUser(user *entity.User) (int, error) {
 		user.Uid = strconv.Itoa(lastUid + 1)
 	}
 
+	fmt.Printf("get user: %v\n", user)
 	err = entity.Db.Create(user).Error
 	if err != nil {
 		return customError.USER_CREATE_FAIL, customError.GetError(customError.USER_CREATE_FAIL, err.Error())
@@ -73,7 +82,13 @@ func UpdateUser(user *entity.User) (int, error) {
 }
 
 func DeleteUser(user *entity.User) (int, error) {
-	err := entity.Db.Where("uid =?", user.Uid).Delete(&entity.User{}).Error
+	var getUser entity.User
+	err := entity.Db.Where("uid = ?", user.Uid).First(&getUser).Error
+	if err != nil {
+		return customError.USER_DELETE_FAIL, customError.GetError(customError.USER_DELETE_FAIL, err.Error())
+	}
+
+	err = entity.Db.Where("uid =?", user.Uid).Delete(&entity.User{}).Error
 	if err != nil {
 		return customError.USER_DELETE_FAIL, customError.GetError(customError.USER_DELETE_FAIL, err.Error())
 	}
@@ -105,4 +120,22 @@ func GetUserList() ([]entity.User, int, error) {
 		return userList, customError.USER_LIST_FAIL, customError.GetError(customError.USER_LIST_FAIL, err.Error())
 	}
 	return userList, customError.SUCCESS, nil
+}
+
+func Login(login *vo.Login) (int, error) {
+	var user entity.User
+	err := entity.Db.Where("username =?", login.Username).First(&user).Error
+	if err != nil {
+		return customError.USER_NOT_FOUND, customError.GetError(customError.USER_NOT_FOUND, err.Error())
+	}
+
+	status, err := utils.CheckPassword(login.Password, user.Password, user.Salt)
+	if err != nil {
+		return customError.OTHER_ERROR, err
+	}
+	if status != customError.SUCCESS {
+		return customError.USER_PASSWORD_ERROR, customError.GetError(customError.USER_PASSWORD_ERROR, "密码错误")
+	}
+
+	return customError.SUCCESS, nil
 }

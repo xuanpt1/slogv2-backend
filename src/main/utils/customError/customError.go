@@ -48,11 +48,12 @@ const (
 	OPTIONS_LIST_FAIL   = 5005
 
 	//用户错误码
-	USER_NOT_FOUND   = 6001
-	USER_UPDATE_FAIL = 6002
-	USER_DELETE_FAIL = 6003
-	USER_CREATE_FAIL = 6004
-	USER_LIST_FAIL   = 6005
+	USER_NOT_FOUND      = 6001
+	USER_UPDATE_FAIL    = 6002
+	USER_DELETE_FAIL    = 6003
+	USER_CREATE_FAIL    = 6004
+	USER_LIST_FAIL      = 6005
+	USER_PASSWORD_ERROR = 6006
 
 	//其他错误码
 	OTHER_ERROR = 114514
@@ -94,11 +95,12 @@ var codeMsg = map[int]string{
 	OPTIONS_CREATE_FAIL: "配置创建失败",
 	OPTIONS_LIST_FAIL:   "配置列表获取失败",
 
-	USER_NOT_FOUND:   "用户不存在",
-	USER_UPDATE_FAIL: "用户更新失败",
-	USER_DELETE_FAIL: "用户删除失败",
-	USER_CREATE_FAIL: "用户创建失败",
-	USER_LIST_FAIL:   "用户列表获取失败",
+	USER_NOT_FOUND:      "用户不存在",
+	USER_UPDATE_FAIL:    "用户更新失败",
+	USER_DELETE_FAIL:    "用户删除失败",
+	USER_CREATE_FAIL:    "用户创建失败",
+	USER_LIST_FAIL:      "用户列表获取失败",
+	USER_PASSWORD_ERROR: "密码错误",
 
 	OTHER_ERROR: "其他错误",
 }
