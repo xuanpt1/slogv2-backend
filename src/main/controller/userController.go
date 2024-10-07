@@ -74,9 +74,9 @@ func Login(c *gin.Context) {
 	var login vo.Login
 	_ = c.ShouldBind(&login)
 
-	status, err := service.Login(&login)
+	token, status, err := service.Login(&login)
 
-	if !ResponseHandler(c, status, err, "用户登录成功", nil) {
+	if !ResponseHandler(c, status, err, "用户登录成功", token) {
 		log.Println(fmt.Sprintf("发生未知错误: %s", err.Error()))
 	}
 }

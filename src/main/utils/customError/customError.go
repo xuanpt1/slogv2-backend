@@ -55,6 +55,10 @@ const (
 	USER_LIST_FAIL      = 6005
 	USER_PASSWORD_ERROR = 6006
 
+	//中间件错误码
+	JWT_CREATE_ERROR = 7001
+	JWT_VERIFY_ERROR = 7002
+
 	//其他错误码
 	OTHER_ERROR = 114514
 )
@@ -101,6 +105,9 @@ var codeMsg = map[int]string{
 	USER_CREATE_FAIL:    "用户创建失败",
 	USER_LIST_FAIL:      "用户列表获取失败",
 	USER_PASSWORD_ERROR: "密码错误",
+
+	JWT_CREATE_ERROR: "JWT创建失败",
+	JWT_VERIFY_ERROR: "JWT验证失败",
 
 	OTHER_ERROR: "其他错误",
 }

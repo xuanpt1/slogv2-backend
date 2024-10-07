@@ -122,20 +122,30 @@ func GetUserList() ([]entity.User, int, error) {
 	return userList, customError.SUCCESS, nil
 }
 
-func Login(login *vo.Login) (int, error) {
+func Login(login *vo.Login) (string, int, error) {
 	var user entity.User
 	err := entity.Db.Where("username =?", login.Username).First(&user).Error
 	if err != nil {
-		return customError.USER_NOT_FOUND, customError.GetError(customError.USER_NOT_FOUND, err.Error())
+		return "", customError.USER_NOT_FOUND, customError.GetError(customError.USER_NOT_FOUND, err.Error())
 	}
 
 	status, err := utils.CheckPassword(login.Password, user.Password, user.Salt)
 	if err != nil {
-		return customError.OTHER_ERROR, err
+		return "", customError.OTHER_ERROR, err
 	}
 	if status != customError.SUCCESS {
-		return customError.USER_PASSWORD_ERROR, customError.GetError(customError.USER_PASSWORD_ERROR, "密码错误")
+		return "", customError.USER_PASSWORD_ERROR, customError.GetError(customError.USER_PASSWORD_ERROR, "密码错误")
 	}
 
-	return customError.SUCCESS, nil
+	//将string类型uid转化为uint类型
+	uid, err := strconv.Atoi(user.Uid)
+	if err != nil {
+		return "", customError.OTHER_ERROR, err
+	}
+	token, err := utils.ReleaseToken(uint(uid))
+	if err != nil {
+		return "", customError.JWT_CREATE_ERROR, err
+	}
+
+	return token, customError.SUCCESS, nil
 }

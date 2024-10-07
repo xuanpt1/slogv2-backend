@@ -1,5 +1,7 @@
 package utils
 
+import "time"
+
 var (
 	// HttpPort 服务开放端口
 	HttpPort string = ":8080"
@@ -22,6 +24,9 @@ var (
 	TestDefaultSalt string = "xuanpt2"
 
 	DefaultPageSize int = 5
+
+	JWTDefaultSecret string        = "xuanpt2"
+	JWTDefaultExpire time.Duration = 60 * 60 * 24 * 7 * time.Second //7天
 )
 
 func init() {
