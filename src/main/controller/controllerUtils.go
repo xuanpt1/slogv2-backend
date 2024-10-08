@@ -39,22 +39,23 @@ func ParamHandler(c *gin.Context, args ...string) map[string]string {
 	}
 }
 
+// TODO 重新规范Service类中https status code使用
 func ResponseHandler(c *gin.Context, status int, err error, successMsg string, data interface{}) bool {
 	if status == http.StatusOK {
-		if data == nil {
+		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code": status,
-				"msg":  successMsg,
-			})
-			return true
-		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"code": status,
-				"msg":  successMsg,
+				"code": customError.GetCode(err),
+				"msg":  err.Error(),
 				"data": data,
 			})
 			return true
 		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": status,
+			"msg":  successMsg,
+			"data": data,
+		})
+		return true
 	} else {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{

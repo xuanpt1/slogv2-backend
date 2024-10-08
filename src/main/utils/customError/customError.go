@@ -125,5 +125,10 @@ func GetMsg(code int) string {
 //		return error.New(fmt.Sprintf("%d: %s", code, codeMsg[code]))
 //	}
 func GetError(code int, msg string) error {
-	return errors.New(fmt.Sprintf("%d: %s\n %s", code, codeMsg[code], msg))
+	return errors.New(fmt.Sprintf("%d: %s %s", code, codeMsg[code], msg))
+}
+
+func GetCode(err error) int {
+	code, _ := fmt.Sscanf(err.Error(), "%d: %s")
+	return code
 }
